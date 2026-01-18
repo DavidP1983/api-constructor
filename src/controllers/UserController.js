@@ -7,6 +7,23 @@ class UserController {
             const { name, email, password } = req.body;
             const userData = await userServices.registration(name, email, password);
 
+            const expiresCookie = 30 * 24 * 60 * 60 * 1000;
+            res.cookies.set('refreshToken', userData?.refreshToken, {
+                maxAge: expiresCookie,
+                httpOnly: true,
+                path: '/',
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+            });
+
+            res.cookies.set('auth_token', userData?.accessToken, {
+                maxAge: expiresCookie,
+                httpOnly: true,
+                path: '/',
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+            });
+
             res.status(201).send(userData);
         } catch (e) {
             next(e);
