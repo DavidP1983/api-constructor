@@ -11,17 +11,17 @@ class UserController {
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
+                sameSite: 'none',
+                secure: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: process.env.NODE_ENV === 'production',
             });
 
             res.cookie('accessToken', userData?.accessToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
+                sameSite: 'none',
+                secure: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: process.env.NODE_ENV === 'production',
             });
 
             res.status(201).send(userData);
@@ -39,17 +39,17 @@ class UserController {
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
+                sameSite: 'none',
+                secure: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: process.env.NODE_ENV === 'production',
             });
 
             res.cookie('accessToken', userData?.accessToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
+                sameSite: 'none',
+                secure: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: process.env.NODE_ENV === 'production',
             });
 
             res.status(200).send(userData);
@@ -67,8 +67,18 @@ class UserController {
             }
 
             await userServices.logout(refreshToken);
-            res.clearCookie('refreshToken');
-            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+            });
+            res.clearCookie('accessToken', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+            });
 
             res.status(200).send({ message: 'Logged out' });
         } catch (e) {
