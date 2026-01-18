@@ -40,8 +40,6 @@ async function connectDB() {
     if (isConnected) return;  // избегая повторного подключения
     try {
         await connect(process.env.DB_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
             serverSelectionTimeoutMS: 30000
         });
         // app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
@@ -52,5 +50,5 @@ async function connectDB() {
     }
 }
 
-connectDB();
+await connectDB();
 export default app;
