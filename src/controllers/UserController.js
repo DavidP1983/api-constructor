@@ -1,4 +1,5 @@
 import userServices from '../services/UserServices.js';
+import { setAuthCookies } from '../utils/setAuthCookies.js';
 
 class UserController {
 
@@ -7,22 +8,23 @@ class UserController {
             const { name, email, password } = req.body;
             const userData = await userServices.registration(name, email, password);
 
-            const expiresCookie = 30 * 24 * 60 * 60 * 1000;
-            res.cookie('refreshToken', userData?.refreshToken, {
-                maxAge: expiresCookie,
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                path: '/',
-            });
+            setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
+            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
+            // res.cookie('refreshToken', userData?.refreshToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
 
-            res.cookie('accessToken', userData?.accessToken, {
-                maxAge: expiresCookie,
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                path: '/',
-            });
+            // res.cookie('accessToken', userData?.accessToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
 
             res.status(201).send(userData);
         } catch (e) {
@@ -35,22 +37,23 @@ class UserController {
             const { email, password } = req.body;
             const userData = await userServices.login(email, password);
 
-            const expiresCookie = 30 * 24 * 60 * 60 * 1000;
-            res.cookie('refreshToken', userData?.refreshToken, {
-                maxAge: expiresCookie,
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                path: '/',
-            });
+            setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
+            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
+            // res.cookie('refreshToken', userData?.refreshToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
 
-            res.cookie('accessToken', userData?.accessToken, {
-                maxAge: expiresCookie,
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                path: '/',
-            });
+            // res.cookie('accessToken', userData?.accessToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
 
             res.status(200).send(userData);
         } catch (e) {
@@ -86,6 +89,38 @@ class UserController {
         }
     }
 
+    async refresh(req, res, next) {
+        try {
+            const { refreshToken } = req.cookies;
+
+            if (!refreshToken) {
+                return res.status(400).send({ message: "Refresh token not found" });
+            }
+
+            const token = await userServices.refresh(refreshToken);
+            setAuthCookies(res, token?.accessToken, token?.refreshToken);
+            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
+            // res.cookie('refreshToken', token?.refreshToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
+            // res.cookie('accessToken', token?.accessToken, {
+            //     maxAge: expiresCookie,
+            //     httpOnly: true,
+            //     sameSite: 'none',
+            //     secure: true,
+            //     path: '/',
+            // });
+
+            res.status(200).send(token);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async update(req, res, next) {
         try {
             const { oldPassword, newPassword } = req.body;
@@ -106,15 +141,6 @@ class UserController {
         }
     }
 
-    async refresh(req, res, next) {
-        try {
-            const { refreshToken } = req.cookies;
-            const token = await userServices.refresh(refreshToken);
-            res.status(200).send(token);
-        } catch (e) {
-            next(e);
-        }
-    }
 
     async uploadFile(req, res, next) {
         try {

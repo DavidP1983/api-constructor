@@ -94,11 +94,14 @@ class UserService {
         }
 
         const user = await User.findById(tokenData.id);
+        if (!user) {
+            throw ApiError.unauthorizedError();
+        }
         const payloadDto = new PayloadDTO(user);
         const userDTO = new UserDTO(user);
-        const { accessToken } = tokenServices.generateToken({ ...payloadDto });
-        // await tokenServices.saveToken(payloadDto.id, token.refreshToken);
-        return { accessToken, user: userDTO };
+        const { accessToken, refreshToken } = tokenServices.generateToken({ ...payloadDto });
+        await tokenServices.saveToken(payloadDto.id, refreshToken);
+        return { accessToken, refreshToken, user: userDTO };
     }
 
     async upload(file) {

@@ -9,7 +9,7 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     try {
-        const accessToken = req.headers.authorization.split(' ')[1];
+        const { accessToken } = req.cookies;
         if (!accessToken) {
             return next(ApiError.unauthorizeError());
         }
@@ -18,6 +18,9 @@ export const authMiddleware = async (req, res, next) => {
             return next(ApiError.unauthorizeError());
         }
         const user = await User.findOne({ _id: validateToken.id });
+        if (!user) {
+            return next(ApiError.unauthorizeError());
+        }
         req.token = validateToken;
         req.user = user;
         next();
