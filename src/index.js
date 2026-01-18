@@ -39,7 +39,11 @@ let isConnected = false;
 async function connectDB() {
     if (isConnected) return;  // избегая повторного подключения
     try {
-        await connect(process.env.DB_URL);
+        await connect(process.env.DB_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 30000
+        });
         // app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
         isConnected = true;
         console.log('mongoose Connected');
