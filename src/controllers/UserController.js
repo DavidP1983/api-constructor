@@ -9,23 +9,6 @@ class UserController {
             const userData = await userServices.registration(name, email, password);
 
             setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
-            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
-            // res.cookie('refreshToken', userData?.refreshToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-
-            // res.cookie('accessToken', userData?.accessToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-
             res.status(201).send(userData);
         } catch (e) {
             next(e);
@@ -38,23 +21,6 @@ class UserController {
             const userData = await userServices.login(email, password);
 
             setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
-            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
-            // res.cookie('refreshToken', userData?.refreshToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-
-            // res.cookie('accessToken', userData?.accessToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-
             res.status(200).send(userData);
         } catch (e) {
             next(e);
@@ -99,22 +65,6 @@ class UserController {
 
             const token = await userServices.refresh(refreshToken);
             setAuthCookies(res, token?.accessToken, token?.refreshToken);
-            // const expiresCookie = 30 * 24 * 60 * 60 * 1000;
-            // res.cookie('refreshToken', token?.refreshToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-            // res.cookie('accessToken', token?.accessToken, {
-            //     maxAge: expiresCookie,
-            //     httpOnly: true,
-            //     sameSite: 'none',
-            //     secure: true,
-            //     path: '/',
-            // });
-
             res.status(200).send(token);
         } catch (e) {
             next(e);
