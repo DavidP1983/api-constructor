@@ -48,10 +48,11 @@ async function connectDB() {
     }
 }
 
+connectDB();
 
-app.use(async (req, res, next) => {
-    await connectDB();
-    next();
-});
+// app.use(async (req, res, next) => {
+//     await connectDB();
+//     next();
+// });
 
 export default app;
