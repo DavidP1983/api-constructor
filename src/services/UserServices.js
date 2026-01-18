@@ -54,7 +54,10 @@ class UserService {
 
     async logout(refreshToken) {
         const token = await tokenServices.removeToken(refreshToken);
-        return token;
+        if (!token) {
+            throw new Error('Token not found');
+        }
+        return true;
     }
 
     async update(_id, oldPassword, newPassword) {

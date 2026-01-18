@@ -16,7 +16,7 @@ class UserController {
                 secure: process.env.NODE_ENV === 'production',
             });
 
-            res.cookie('auth_token', userData?.accessToken, {
+            res.cookie('accessToken', userData?.accessToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
                 path: '/',
@@ -44,7 +44,7 @@ class UserController {
                 secure: process.env.NODE_ENV === 'production',
             });
 
-            res.cookie('auth_token', userData?.accessToken, {
+            res.cookie('accessToken', userData?.accessToken, {
                 maxAge: expiresCookie,
                 httpOnly: true,
                 path: '/',
@@ -60,8 +60,16 @@ class UserController {
 
     async logout(req, res, next) {
         try {
-            const { refreshToken } = req.cookies;
-            await userServices.logout(refreshToken);
+            const { refreshToken, accessToken } = req.cookies;
+
+            if (!refreshToken) {
+                return res.status(400).send({ message: "Refresh token not found" });
+            }
+
+            await userServices.logout(refreshToken, accessToken);
+            res.clearCookie('refreshToken');
+            res.clearCookie('accessToken');
+
             res.status(200).send({ message: 'Logged out' });
         } catch (e) {
             next(e);
