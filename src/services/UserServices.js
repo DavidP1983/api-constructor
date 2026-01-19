@@ -79,7 +79,7 @@ class UserService {
 
         const deletedTests = await testServices.deleteAllUserTests(_id);
         if (!deletedTests) {
-            throw ApiError.internal(404, "Failed to delete user tests");
+            throw ApiError.internal(500, "Failed to delete user tests");
         }
 
         const deletedUser = await User.deleteOne({ _id });
