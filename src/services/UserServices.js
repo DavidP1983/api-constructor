@@ -36,6 +36,7 @@ class UserService {
         return { ...tokens, user: userDto };
     }
 
+
     async login(email, password) {
         const user = await User.findCredentials(email, password);
 
@@ -52,6 +53,7 @@ class UserService {
         return { ...token, user: userDTO };
     }
 
+
     async logout(refreshToken) {
         const token = await tokenServices.removeToken(refreshToken);
         if (!token) {
@@ -59,6 +61,7 @@ class UserService {
         }
         return true;
     }
+
 
     async update(_id, oldPassword, newPassword) {
         const user = await User.checkCredentials(_id, oldPassword);
@@ -68,6 +71,7 @@ class UserService {
 
         return user;
     }
+
 
     async delete(_id, password, refreshToken) {
         await User.checkCredentials(_id, password);
@@ -81,6 +85,7 @@ class UserService {
 
         return { token, deletedUser, deletedTests };
     }
+
 
     async refresh(refreshToken) {
 
@@ -99,15 +104,17 @@ class UserService {
         }
         const payloadDto = new PayloadDTO(user);
         const userDTO = new UserDTO(user);
-        const { accessToken, refreshToken } = tokenServices.generateToken({ ...payloadDto });
-        await tokenServices.saveToken(payloadDto.id, refreshToken);
-        return { accessToken, refreshToken, user: userDTO };
+        const token = tokenServices.generateToken({ ...payloadDto });
+        await tokenServices.saveToken(payloadDto.id, token?.refreshToken);
+        return { ...token, user: userDTO };
     }
+
 
     async upload(file) {
         const buffer = await sharp(file).resize({ width: 100, height: 100 }).webp().toBuffer();
         return buffer;
     }
+
 
     async getImg(_id) {
         const user = await User.findById({ _id });
