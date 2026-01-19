@@ -23,7 +23,7 @@ class UserController {
 
             setAuthCookies(res, accessToken, refreshToken);
             // res.status(200).send(user);
-            return res.redirect('/builder');
+            res.status(200).send({ ok: true });
         } catch (e) {
             next(e);
         }
