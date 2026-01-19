@@ -22,7 +22,17 @@ class UserController {
             const { user, accessToken, refreshToken } = await userServices.login(email, password);
 
             setAuthCookies(res, accessToken, refreshToken);
-            res.status(200).send(user);
+            // res.status(200).send(user);
+            return res.redirect('/builder');
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async me(req, res, next) {
+        try {
+            const user = await userServices.getUserById(req.user.id);
+            return res.status(200).send(user);
         } catch (e) {
             next(e);
         }

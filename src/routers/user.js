@@ -8,6 +8,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 const {
     registration,
     login,
+    me,
     logout,
     update,
     deleteUser,
@@ -33,6 +34,7 @@ const upload = multer({
 
 router.post('/registration', registration);
 router.post('/login', login);
+router.post('/me', authMiddleware, me);
 router.post('/logout', logout);
 router.patch('/update', authMiddleware, update);
 router.delete('/delete', authMiddleware, deleteUser);
