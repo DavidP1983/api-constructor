@@ -76,14 +76,20 @@ class UserService {
     async delete(_id, password, refreshToken) {
         await User.checkCredentials(_id, password);
 
-        const deletedUser = await User.deleteOne({ _id });
-        const deletedTests = await testServices.deleteAllUserTests(_id);
-        if (!deletedTests || !deletedUser.deletedCount) {
-            return next(ApiError.notFound(404, "Something went wrong during this operation"));
-        }
-        const token = await tokenServices.removeToken(refreshToken);
 
-        return { token, deletedUser, deletedTests };
+        const deletedTests = await testServices.deleteAllUserTests(_id);
+        if (!deletedTests) {
+            throw ApiError.internal(404, "Failed to delete user tests");
+        }
+
+        const deletedUser = await User.deleteOne({ _id });
+        if (!deletedUser.deletedCount) {
+            throw ApiError.notFound(404, 'User not found');
+        }
+
+        await tokenServices.removeToken(refreshToken);
+
+        return { success: true };
     }
 
 

@@ -1,4 +1,4 @@
-const COOKIE_OPTIONS = {
+export const COOKIE_OPTIONS = {
     httpOnly: true,
     sameSite: 'none',
     secure: true,

@@ -1,5 +1,6 @@
+import { ApiError } from '../exceptions/apiError.js';
 import userServices from '../services/UserServices.js';
-import { setAuthCookies } from '../utils/setAuthCookies.js';
+import { COOKIE_OPTIONS, setAuthCookies } from '../utils/setAuthCookies.js';
 
 class UserController {
 
@@ -32,22 +33,12 @@ class UserController {
             const { refreshToken } = req.cookies;
 
             if (!refreshToken) {
-                return res.status(400).send({ message: "Refresh token not found" });
+                throw ApiError.unauthorizeError();
             }
 
             await userServices.logout(refreshToken);
-            res.clearCookie('refreshToken', {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                path: '/',
-            });
-            res.clearCookie('accessToken', {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                path: '/',
-            });
+            res.clearCookie('refreshToken', COOKIE_OPTIONS);
+            res.clearCookie('accessToken', COOKIE_OPTIONS);
 
             res.status(200).send({ message: 'Logged out' });
         } catch (e) {
@@ -60,7 +51,7 @@ class UserController {
             const { refreshToken } = req.cookies;
 
             if (!refreshToken) {
-                return res.status(400).send({ message: "Refresh token not found" });
+                throw ApiError.unauthorizeError();
             }
 
             const token = await userServices.refresh(refreshToken);
@@ -84,8 +75,18 @@ class UserController {
     async deleteUser(req, res, next) {
         try {
             const { password } = req.body;
-            const deletedAccount = await userServices.delete(req.user.id, password, req.cookies.refreshToken);
-            res.status(200).send(deletedAccount);
+            const { refreshToken } = req.cookies;
+
+            if (!refreshToken) {
+                throw ApiError.unauthorizeError();
+            }
+
+            await userServices.delete(req.user.id, password, refreshToken);
+
+            res.clearCookie('refreshToken', COOKIE_OPTIONS);
+            res.clearCookie('accessToken', COOKIE_OPTIONS);
+
+            res.status(200).send({ success: true });
         } catch (e) {
             next(e);
         }

@@ -19,4 +19,7 @@ export class ApiError extends Error {
     static notFound(status, message) {
         return new ApiError(status, message);
     }
+    static internal(status, message) {
+        return new ApiError(status, message);
+    }
 };
