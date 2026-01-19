@@ -6,10 +6,10 @@ class UserController {
     async registration(req, res, next) {
         try {
             const { name, email, password } = req.body;
-            const userData = await userServices.registration(name, email, password);
+            const { user, accessToken, refreshToken } = await userServices.registration(name, email, password);
 
-            setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
-            res.status(201).send(userData);
+            setAuthCookies(res, accessToken, refreshToken);
+            res.status(201).send(user);
         } catch (e) {
             next(e);
         }
@@ -18,10 +18,10 @@ class UserController {
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
-            const userData = await userServices.login(email, password);
+            const { user, accessToken, refreshToken } = await userServices.login(email, password);
 
-            setAuthCookies(res, userData?.accessToken, userData?.refreshToken);
-            res.status(200).send(userData);
+            setAuthCookies(res, accessToken, refreshToken);
+            res.status(200).send(user);
         } catch (e) {
             next(e);
         }
