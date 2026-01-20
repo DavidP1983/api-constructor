@@ -53,13 +53,6 @@ class UserService {
         return { ...token, user: userDTO };
     }
 
-    async getUserById(id) {
-        const user = await User.findById(id);
-        if (!user) {
-            throw ApiError.notFound(404, 'User not found');
-        }
-        return user;
-    }
 
     async logout(refreshToken) {
         const token = await tokenServices.removeToken(refreshToken);
