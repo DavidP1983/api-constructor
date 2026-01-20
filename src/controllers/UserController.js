@@ -28,6 +28,19 @@ class UserController {
         }
     }
 
+    async checkAuth(req, res, next) {
+        try {
+            const { refreshToken } = req.cookies;
+            console.log("CHECK-AUTH", refreshToken);
+            if (!refreshToken) {
+                res.status(401).send({ ok: false });
+            }
+            res.status(200).send({ ok: true });
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async logout(req, res, next) {
         try {
             const { refreshToken } = req.cookies;
