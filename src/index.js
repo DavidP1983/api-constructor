@@ -5,6 +5,8 @@ import express from 'express';
 import { ApiError } from './exceptions/apiError.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { multerErrorHandler } from './middleware/multerErrorHandler.js';
+import accessLinkRouter from './routers/accessLink.js';
+import completedTestRouter from './routers/completed.js';
 import testRouter from './routers/test.js';
 import userRouter from './routers/user.js';
 
@@ -25,6 +27,8 @@ app.use(cors({
 
 app.use('/user', userRouter);
 app.use('/test', testRouter);
+app.use('/link', accessLinkRouter);
+app.use('/completed', completedTestRouter);
 
 app.use((req, res, next) => {
     next(ApiError.badRequest(404, `Request failed. Please try again`));
@@ -42,7 +46,7 @@ async function connectDB() {
         await connect(process.env.DB_URL, {
             serverSelectionTimeoutMS: 30000
         });
-        // app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
+        app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
         isConnected = true;
         console.log('mongoose Connected');
     } catch (e) {

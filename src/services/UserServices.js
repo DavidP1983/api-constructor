@@ -3,6 +3,7 @@ import sharp from 'sharp';
 import { PayloadDTO } from '../dto/payloadDTO.js';
 import { UserDTO } from '../dto/userDTO.js';
 import { ApiError } from '../exceptions/apiError.js';
+import { CompletedTest } from '../model/CompletedTest.js';
 import { User } from '../model/Users.js';
 import tokenServices from '../services/TokenServices.js';
 import testServices from './TestServices.js';
@@ -76,6 +77,12 @@ class UserService {
     async delete(_id, password, refreshToken) {
         await User.checkCredentials(_id, password);
 
+
+        const deleteCompletedTests = await CompletedTest.deleteMany({ authorId: String(_id) });
+
+        if (!deleteCompletedTests.deletedCount) {
+            throw ApiError.internal(500, "Failed to delete user tests");
+        }
 
         const deletedTests = await testServices.deleteAllUserTests(_id);
         if (!deletedTests) {

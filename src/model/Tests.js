@@ -19,13 +19,6 @@ const questionSchema = new Schema({
     options: { type: [optionSchema], required: true }
 }, { _id: false });
 
-const resultSchema = new Schema({
-    totalQuestions: { type: Number, require: true },
-    answers: { type: Number, require: true },
-}, { _id: false });
-
-
-
 
 const testSchema = new Schema({
     id: { type: String, require: true },
@@ -35,10 +28,10 @@ const testSchema = new Schema({
         require: true
     },
     name: { type: String, require: true },
+    creator: { type: String, require: true },
     createdAt: { type: String, require: true },
     participantsCount: { type: Number, require: true },
     test: { type: [questionSchema], require: true },
-    result: { type: resultSchema, require: true }
 }, { timestamps: true });
 
 

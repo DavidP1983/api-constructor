@@ -22,4 +22,7 @@ export class ApiError extends Error {
     static internal(status, message) {
         return new ApiError(status, message);
     }
+    static availability(status, message) {
+        return new ApiError(status, message);
+    }
 };

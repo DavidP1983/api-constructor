@@ -9,7 +9,6 @@ const {
     registration,
     login,
     logout,
-    checkAuth,
     update,
     deleteUser,
     refresh,
@@ -35,7 +34,6 @@ const upload = multer({
 router.post('/registration', registration);
 router.post('/login', login);
 router.post('/logout', logout);
-router.post('/check-auth', checkAuth);
 router.patch('/update', authMiddleware, update);
 router.delete('/delete', authMiddleware, deleteUser);
 router.post('/refresh', refresh);
