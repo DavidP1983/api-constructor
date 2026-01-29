@@ -18,8 +18,17 @@ class TestAccessLinkServices {
         };
         const url = new TestAccessLink(accessLink);
         await url.save();
+
+        const clientUrl =
+            process.env.NODE_ENV === 'production'
+                ? process.env.CLIENT_URL_PROD
+                : process.env.CLIENT_URL;
+
+        if (!clientUrl) {
+            throw new Error('CLIENT_URL is not defined');
+        }
         return {
-            url: `${process.env.CLIENT_URL}/pass/${token}`
+            url: `${clientUrl}/pass/${token}`
         };
     }
 
