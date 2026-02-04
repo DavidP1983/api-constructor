@@ -15,6 +15,7 @@ const CompletedTestSchema = new Schema({
     authorId: { type: String, require: true },
     testName: { type: String, require: true },
     candidateName: { type: String, require: true },
+    candidateEmail: { type: String, require: true },
     totalQuestions: { type: Number, default: 0 },
     correctAnswers: { type: Number, default: 0 },
     score: { type: Number, require: true },
