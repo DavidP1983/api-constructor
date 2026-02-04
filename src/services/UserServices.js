@@ -78,15 +78,17 @@ class UserService {
         await User.checkCredentials(_id, password);
 
 
-        const deleteCompletedTests = await CompletedTest.deleteMany({ authorId: String(_id) });
-
-        if (!deleteCompletedTests.deletedCount) {
-            throw ApiError.internal(500, "Failed to delete user tests");
+        try {
+            await CompletedTest.deleteMany({ authorId: String(_id) });
+        } catch (e) {
+            throw ApiError.internal(500, "Error while deleting completed tests");
         }
 
-        const deletedTests = await testServices.deleteAllUserTests(_id);
-        if (!deletedTests) {
-            throw ApiError.internal(500, "Failed to delete user tests");
+
+        try {
+            await testServices.deleteAllUserTests(_id);
+        } catch (e) {
+            throw ApiError.internal(500, "Error while deleting completed tests");
         }
 
         const deletedUser = await User.deleteOne({ _id });
