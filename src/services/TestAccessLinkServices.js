@@ -33,12 +33,12 @@ class TestAccessLinkServices {
     }
 
     async getTest(token) {
-        const link = await TestAccessLink.findOne({ token });
+        const link = await TestAccessLink.findOne({ token }).lean();
         if (!link || link.used) {
             throw ApiError.availability(410, "Link not available");
         }
-        await TestAccessLink.findOneAndUpdate({ token, startedAt: null }, { startedAt: new Date() }, { new: true });
-        const test = await Tests.findOne({ id: link.testId });
+        await TestAccessLink.findOneAndUpdate({ token, startedAt: null }, { startedAt: new Date() });
+        const test = await Tests.findOne({ id: link.testId }).lean();
         return { test, linkId: link._id };
     }
 }

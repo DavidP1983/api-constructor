@@ -3,6 +3,7 @@ const router = new Router();
 
 import testController from '../controllers/TestController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+import { cache } from '../middleware/cacheMiddleware.js';
 
 const {
     getTestsByQueryParams,
@@ -13,7 +14,25 @@ const {
     deleteTest
 } = testController;
 
-router.get('/get', authMiddleware, getTestsByQueryParams);
+// Redis key for test operation
+export const fabricKey = {
+    admin: 'tests:Admin:all',
+    user: (id) => {
+        return `tests:User:${id}`;
+    }
+};
+
+router.get('/get', authMiddleware, cache((req) => {
+    const { id, role } = req.user;
+    const { q } = req?.query;
+    const key = role === 'Admin' ? fabricKey.admin : fabricKey.user(id);
+    return {
+        key,
+        query: q
+    };
+
+}, 120), getTestsByQueryParams);
+
 router.post('/create', authMiddleware, createTest);
 router.patch('/update', authMiddleware, updateTest);
 router.delete('/delete/:id', authMiddleware, deleteTest);

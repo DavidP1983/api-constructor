@@ -10,7 +10,7 @@ export class UserDTO {
     hasAvatar;
 
     constructor(userModel) {
-        this.id = userModel._id;
+        this.id = String(userModel._id);
         this.name = userModel.name;
         this.email = userModel.email;
         this.role = userModel.role;

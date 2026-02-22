@@ -9,6 +9,7 @@ class CompletedTestController {
             if (!completedTests) {
                 throw new ApiError.internal(500, 'Failed to create completed test');
             }
+
             res.status(200).json({ success: true });
         } catch (e) {
             next(e);
@@ -19,10 +20,7 @@ class CompletedTestController {
         const id = req.params.id;
         try {
             const tests = await CompletedTestServices.getCompletedTest(id);
-            if (!tests.length) {
-                return next(ApiError.notFound(404, "Not found"));
-            }
-            res.status(200).send(tests);
+            return res.json(tests);
         } catch (e) {
             next(e);
         }
@@ -32,7 +30,7 @@ class CompletedTestController {
         const id = req.params.id;
         try {
             const result = await CompletedTestServices.getCompletedTestResult(id);
-            res.status(200).json(result);
+            res.json(result);
         } catch (e) {
             next(e);
         }

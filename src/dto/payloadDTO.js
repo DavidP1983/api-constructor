@@ -5,7 +5,7 @@ export class PayloadDTO {
     avatar;
 
     constructor(userModel) {
-        this.id = userModel.id;
+        this.id = String(userModel._id);
         this.name = userModel.name;
         this.email = userModel.email;
         this.role = userModel.role;

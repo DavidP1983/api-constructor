@@ -19,7 +19,8 @@ class UserController {
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
-            const { user, accessToken, refreshToken } = await userServices.login(email, password);
+            const ip = req.headers["x-forwarded-for"]?.split(',')[0] || req.socket.remoteAddress;
+            const { user, accessToken, refreshToken } = await userServices.login(email, password, ip);
 
             setAuthCookies(res, accessToken, refreshToken);
             res.status(200).send(user);

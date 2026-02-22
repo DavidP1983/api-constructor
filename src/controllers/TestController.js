@@ -1,4 +1,5 @@
 
+import { invalidateTestsCache } from "../cache/invalidateTestsCache.js";
 import { ApiError } from "../exceptions/apiError.js";
 import testServices from "../services/TestServices.js";
 
@@ -17,8 +18,9 @@ class TestController {
             if (q) {
                 filter.name = { $regex: q, $options: "i" };
             }
+
             const tests = await testServices.find(filter);
-            res.status(200).send(tests);
+            return res.json(tests);
 
         } catch (e) {
             next(e);
@@ -28,6 +30,9 @@ class TestController {
     async createTest(req, res, next) {
         try {
             const createdTest = await testServices.create(req.body, req.token.id);
+
+            // Redis invalidate cache
+            await invalidateTestsCache(req.user.id);
             res.status(201).send(createdTest);
         } catch (e) {
             next(e);
@@ -59,6 +64,10 @@ class TestController {
     async updateTest(req, res, next) {
         try {
             const updatedTest = await testServices.update(req.body);
+
+            // Redis invalidate cache
+            await invalidateTestsCache(req.user.id);
+
             return res.status(200).send(updatedTest);
         } catch (e) {
             next(e);
@@ -72,6 +81,9 @@ class TestController {
             if (!test) {
                 return next(ApiError.notFound(404, "Item Not found"));
             }
+
+            // Redis invalidate cache
+            await invalidateTestsCache(req.user.id);
             res.status(200).send({ message: `task ${id} was deleted, ${req.user.name}` });
         } catch (e) {
             next(e);

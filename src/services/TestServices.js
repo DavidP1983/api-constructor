@@ -4,12 +4,12 @@ import { Tests } from "../model/Tests.js";
 class TestServices {
 
     async find(filter) {
-        const tests = await Tests.find(filter).sort({ createdAt: -1 });
+        const tests = await Tests.find(filter).sort({ createdAt: -1 }).lean();
         return tests;
     }
 
     async findById(id) {
-        const test = await Tests.findOne({ id });
+        const test = await Tests.findOne({ id }).lean();
         return test;
     }
 
