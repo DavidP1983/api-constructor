@@ -4,7 +4,7 @@ import { ApiError } from '../exceptions/apiError.js';
 import { CompletedTest } from "../model/CompletedTest.js";
 import { TestAccessLink } from "../model/TestAccessLink.js";
 import { Tests } from '../model/Tests.js';
-
+import { sendMail } from '../utils/sendMail.js';
 
 
 class CompletedTestServices {
@@ -38,6 +38,10 @@ class CompletedTestServices {
         await TestAccessLink.updateOne({ token: link.token }, { used: true, usedAt: completedAt }, { new: true });
         // Redis invalidate data
         await invalidateCompletedTestCache(updatedTest.authorId, id);
+        // Не блокируем основой поток fire-and-forget
+        sendMail(data)
+            .then((res) => console.log("Mail response:", res))
+            .catch((e) => console.error("Mail error:", e.message));
 
         return true;
     }
