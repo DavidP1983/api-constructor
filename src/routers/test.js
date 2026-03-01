@@ -36,7 +36,7 @@ router.get('/get', authMiddleware, cache((req) => {
 router.post('/create', authMiddleware, createTest);
 router.patch('/update', authMiddleware, updateTest);
 router.delete('/delete/:id', authMiddleware, deleteTest);
-router.get('/get/public', getPublicTests);
+router.get('/get/public', getPublicTests); // Приводит к проблема на GitHub-Actions при CI, временно не используется
 router.get('/get/public/:id', getTestsByID);
 
 export default router;

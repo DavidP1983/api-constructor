@@ -8,7 +8,16 @@ dotenv.config();
 
 class TestAccessLinkServices {
 
-    async create(testId) {
+    async create(testId, userId) {
+        const test = await Tests.findOne({ id: testId });
+        if (!test) {
+            throw ApiError.notFound('Test not found');
+        }
+
+        if (userId !== test.authorId.toString()) {
+            throw ApiError.forbidden(403, 'You can only create links for your own tests');
+        }
+
         const token = crypto.randomBytes(16).toString('hex');
         const accessLink = {
             token,

@@ -77,8 +77,9 @@ class TestController {
     async deleteTest(req, res, next) {
         const id = req.params.id;
         try {
-            const test = await testServices.delete(id, req.user.id, req.user.role);
-            if (!test) {
+            const result = await testServices.delete(id, req.user.id, req.user.role);
+            const deleted = result?.deletedCount ?? (result ? 1 : 0);
+            if (deleted === 0) {
                 return next(ApiError.notFound(404, "Item Not found"));
             }
 

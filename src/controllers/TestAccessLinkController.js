@@ -6,7 +6,8 @@ class TestAccessLinkController {
     async createLink(req, res, next) {
         try {
             const testId = req.params.id;
-            const { url } = await TestAccessLinkServices.create(testId);
+            const userId = req.user.id;
+            const { url } = await TestAccessLinkServices.create(testId, userId);
             res.status(200).json({ url });
         } catch (e) {
             next(e);

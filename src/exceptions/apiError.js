@@ -25,4 +25,7 @@ export class ApiError extends Error {
     static availability(status, message) {
         return new ApiError(status, message);
     }
+    static forbidden(status, message) {
+        return new ApiError(status, message);
+    }
 };

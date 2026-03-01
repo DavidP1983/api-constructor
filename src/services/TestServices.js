@@ -36,10 +36,10 @@ class TestServices {
     async delete(id, userId, role) {
         if (role === 'Admin') {
             const result = await Tests.findOneAndDelete({ id });
-            return result.deletedCount;
+            return result;
         }
         const result = await Tests.deleteOne({ id, authorId: userId });
-        return result.deletedCount;
+        return result;
     }
 
     async deleteAllUserTests(id) {
