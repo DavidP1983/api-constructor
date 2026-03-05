@@ -48,6 +48,16 @@ class CompletedTestController {
             next(e);
         }
     }
+
+    async sendNotificationEmail(req, res, next) {
+        const data = req.body;
+        try {
+            await CompletedTestServices.sendNotificationEmail(data);
+            res.status(200).json({ success: true });
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export default new CompletedTestController();

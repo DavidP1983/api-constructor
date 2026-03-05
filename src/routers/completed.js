@@ -8,7 +8,8 @@ const {
     createCompletedTest,
     getCompletedTest,
     getCompletedTestResult,
-    deleteCompletedTest
+    deleteCompletedTest,
+    sendNotificationEmail
 } = completedTestController;
 
 
@@ -37,5 +38,6 @@ router.get('/get-completed-result-test/:id', cache((req) => {
 }, 120), getCompletedTestResult);
 
 router.delete('/delete-completed-test/:id', deleteCompletedTest);
+router.post('/send-notification-email', sendNotificationEmail);
 
 export default router;

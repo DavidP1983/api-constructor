@@ -11,5 +11,11 @@
             "src": "/((?!.*\\.\\w+$).*)",
             "dest": "/src/index.js"
         }
-    ]
+    ],
+    "functions": {
+        "src/index.js": {
+            "runtime": "nodejs18.x",
+            "maxDuration": 30
+        }
+    }
 }

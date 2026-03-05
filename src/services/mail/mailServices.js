@@ -3,7 +3,7 @@ dotenv.config();
 
 class MailService {
 
-    async sendMail({ to, name, subject, template_id, template_data }) {
+    async sendMail({ to, name, subject, template_id, template_data, attachments = [] }) {
 
         if (!process.env.MAILEROO_API_KEY) {
             throw new Error("MAILEROO_API_KEY is not defined");
@@ -28,7 +28,8 @@ class MailService {
                 subject,
                 template_id,
                 template_data,
-                tracking: true
+                tracking: true,
+                attachments
             })
         });
 

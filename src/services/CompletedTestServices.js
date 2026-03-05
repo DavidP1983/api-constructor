@@ -4,6 +4,7 @@ import { ApiError } from '../exceptions/apiError.js';
 import { CompletedTest } from "../model/CompletedTest.js";
 import { TestAccessLink } from "../model/TestAccessLink.js";
 import { Tests } from '../model/Tests.js';
+import { convertHtmlToPdf } from '../utils/convertHtmlToPdf.js';
 import { sendMail } from '../utils/sendMail.js';
 
 
@@ -72,6 +73,18 @@ class CompletedTestServices {
         // Redis invalidate data
         await invalidateCompletedTestCache(res.authorId, res.id);
         return res;
+    }
+
+    async sendNotificationEmail(data) {
+        const { html, shouldSendPdf } = data;
+
+        if (html && shouldSendPdf) {
+            const pdfBase64 = await convertHtmlToPdf(html);
+            await sendMail(data, pdfBase64);
+        } else {
+            await sendMail(data, null);
+        }
+        return true;
     }
 }
 

@@ -1,30 +1,29 @@
-import MailServices from "../services/mailServices.js";
+import { ApiError } from "../exceptions/apiError.js";
+import { createEmailPayload } from "../services/mail/createEmailPayload.js";
+import { createEmailPayloadWithAttachments } from "../services/mail/createEmailPayloadWithAttachments.js";
+import MailServices from "../services/mail/mailServices.js";
 
-export const sendMail = async (data) => {
-    const {
-        testName,
-        candidateName,
-        candidateEmail,
-        score
-    } = data;
+export const sendMail = async (data, pdfBase64) => {
 
-    if (score < 70) {
+    if (data?.score < 70 && data?.source !== 'client') {
         try {
-            const result = await MailServices.sendMail({
-                to: candidateEmail,
-                name: candidateName,
-                subject: 'Test result',
-                template_id: 6374,
-                template_data: {
-                    company_name: 'Test Constructor',
-                    name: candidateName,
-                    score,
-                    test_name: testName
-                }
-            });
+            const templateWithFailed = createEmailPayload(data);
+            const result = await MailServices.sendMail(templateWithFailed);
             return result;
         } catch (e) {
-            console.error(e);
+            console.error('Background email failed:', e);
+            return null;
         }
     }
+
+    if (data?.source === 'client') {
+        const templateWithSuccess = createEmailPayloadWithAttachments(data, pdfBase64);
+        try {
+            const result = await MailServices.sendMail(templateWithSuccess);
+            return result;
+        } catch (e) {
+            throw ApiError.internal(500, 'Failed to send email');
+        }
+    }
+    throw new Error('No email condition matched');
 };
