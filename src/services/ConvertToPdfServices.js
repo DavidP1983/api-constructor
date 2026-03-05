@@ -1,5 +1,4 @@
-import chromium from "@sparticuz/chromium-min";
-import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium";
 import puppeteerCore from "puppeteer-core";
 
 let browserPromise = null;
@@ -12,7 +11,7 @@ export const getBrowser = async () => {
 
         if (isVercel) {
             browserPromise = puppeteerCore.launch({
-                args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox"],
+                args: chromium.args,
                 defaultViewport: chromium.defaultViewport,
                 executablePath: await chromium.executablePath(),
                 headless: true,
@@ -21,7 +20,8 @@ export const getBrowser = async () => {
             });
 
         } else {
-            browserPromise = puppeteer.launch({
+            const puppeteerFull = await import('puppeteer');
+            browserPromise = puppeteerFull.default.launch({
                 headless: true,
                 slowMo: 50,
                 timeout: 0
