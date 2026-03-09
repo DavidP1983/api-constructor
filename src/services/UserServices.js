@@ -42,7 +42,7 @@ class UserService {
 
     async login(email, password, ip) {
         const key = `login:${ip}`;
-        const REFRESH_TTL = 60 * 24 * 60 * 60;
+        const REFRESH_TTL = 30 * 24 * 60 * 60;
 
         // Redis Rate Time Limit
         // Делаем проверку до того, как запрос пойдет к DB
@@ -148,7 +148,7 @@ class UserService {
 
 
     async refresh(refreshToken) {
-        const REFRESH_TTL = 60 * 24 * 60 * 60;
+        const REFRESH_TTL = 30 * 24 * 60 * 60;
         let isValidToken = false;
         console.log('refresh');
 
