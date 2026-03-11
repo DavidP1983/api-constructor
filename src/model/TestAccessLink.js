@@ -3,12 +3,12 @@ import { Schema, model } from 'mongoose';
 const testAccessLinkSchema = new Schema({
     token: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
         index: true
     },
-    testId: { type: String, require: true },
-    used: { type: Boolean, require: true },
+    testId: { type: String, required: true },
+    used: { type: Boolean, required: true },
     startedAt: { type: Date, default: null },
     usedAt: { type: Date, default: null }
 }, { timestamps: true });

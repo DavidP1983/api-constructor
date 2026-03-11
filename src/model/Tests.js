@@ -2,20 +2,20 @@ import { Schema, model } from 'mongoose';
 
 
 const optionSchema = new Schema({
-    id: { type: String, require: true },
-    question: { type: String, require: true },
-    answer: { type: Boolean, require: true }
+    id: { type: String, required: true },
+    question: { type: String, required: true },
+    answer: { type: Boolean, required: true }
 }, { _id: false });
 
 const questionSchema = new Schema({
-    id: { type: String, require: true },
+    id: { type: String, required: true },
     type: {
         type: String,
         enum: ['radio', 'checkbox'],
-        require: true
+        required: true
     },
-    title: { type: String, require: true },
-    instructions: { type: String, require: true },
+    title: { type: String, required: true },
+    instructions: { type: String, required: true },
     options: { type: [optionSchema], required: true }
 }, { _id: false });
 
@@ -25,13 +25,13 @@ const testSchema = new Schema({
     authorId: {
         type: Schema.Types.ObjectId, // authorId пользователя
         ref: "User",
-        require: true
+        required: true
     },
-    name: { type: String, require: true },
-    creator: { type: String, require: true },
-    createdAt: { type: String, require: true },
-    participantsCount: { type: Number, require: true },
-    test: { type: [questionSchema], require: true },
+    name: { type: String, required: true },
+    creator: { type: String, required: true },
+    createdAt: { type: String, required: true },
+    participantsCount: { type: Number, required: true },
+    test: { type: [questionSchema], required: true },
 }, { timestamps: true });
 
 

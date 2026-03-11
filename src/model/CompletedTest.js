@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 
 const questionSchema = new Schema({
-    questionId: { type: String, require: true },
+    questionId: { type: String, required: true },
     selectedOptions: { type: [String], required: true }
 }, { _id: false });
 
@@ -10,21 +10,21 @@ const questionSchema = new Schema({
 
 
 const CompletedTestSchema = new Schema({
-    accessToken: { type: String, require: true },
-    id: { type: String, require: true },
-    authorId: { type: String, require: true },
-    testName: { type: String, require: true },
-    candidateName: { type: String, require: true },
-    candidateEmail: { type: String, require: true },
+    accessToken: { type: String, required: true },
+    id: { type: String, required: true },
+    authorId: { type: String, required: true },
+    testName: { type: String, required: true },
+    candidateName: { type: String, required: true },
+    candidateEmail: { type: String, required: true },
     totalQuestions: { type: Number, default: 0 },
     correctAnswers: { type: Number, default: 0 },
-    score: { type: Number, require: true },
-    status: { type: String, enum: ['passed', 'failed'], require: true },
-    answers: { type: [questionSchema], require: true },
+    score: { type: Number, required: true },
+    status: { type: String, enum: ['passed', 'failed'], required: true },
+    answers: { type: [questionSchema], required: true },
     startedAt: { type: Date, default: null },
     finishedAt: { type: Date, default: null },
-    completedAt: { type: String, require: true },
-    duration: { type: Number, default: 0, require: true }
+    completedAt: { type: String, required: true },
+    duration: { type: Number, default: 0, required: true }
 }, { timestamps: true });
 
 export const CompletedTest = model('CompletedTest', CompletedTestSchema);

@@ -8,6 +8,7 @@ import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { multerErrorHandler } from './middleware/multerErrorHandler.js';
 import accessLinkRouter from './routers/accessLink.js';
 import completedTestRouter from './routers/completed.js';
+import notificationsRouter from './routers/notifications.js';
 import testRouter from './routers/test.js';
 import userRouter from './routers/user.js';
 
@@ -32,6 +33,7 @@ app.use('/user', userRouter);
 app.use('/test', testRouter);
 app.use('/link', accessLinkRouter);
 app.use('/completed', completedTestRouter);
+app.use('/notifications', notificationsRouter);
 
 app.use((req, res, next) => {
     next(ApiError.badRequest(404, `Request failed. Please try again`));

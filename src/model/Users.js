@@ -3,23 +3,31 @@ import { Schema, model } from 'mongoose';
 import { ApiError } from '../exceptions/apiError.js';
 
 
+const notificationSchema = new Schema({
+    sender: { type: String, enum: ['System', 'Admin'], required: true },
+    type: { type: String, enum: ['warning', 'system', 'info'], required: true },
+    message: { type: String, required: true },
+    isRead: { type: Boolean, default: false },
+    createdAt: { type: String, default: '' }
+}, { _id: false });
+
 const userSchema = new Schema({
     name: {
         type: String,
         uppercase: true,
         trim: true,
-        require: true,
+        required: true,
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         trim: true,
         unique: true
     },
-    password: { type: String, require: true },
+    password: { type: String, required: true },
     role: { type: String, default: 'User' },
     joined: { type: String },
-    notifications: { type: Boolean },
+    notifications: { type: notificationSchema, default: null },
     lastLogin: { type: String, default: '' },
     lastActivity: { type: String },
     avatar: { type: Buffer }
