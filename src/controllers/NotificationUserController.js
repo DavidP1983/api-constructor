@@ -29,14 +29,13 @@ class NotificationUserController {
         }
     }
 
-    async readNotification(req, res, next) {
+    async markNotificationAsRead(req, res, next) {
         try {
             const id = req.user.id;
-            console.log('READ', id);
             if (!id) {
                 throw new ApiError.badRequest(400, 'Invalid data in Read Notification');
             }
-            await NotificationUserServices.readUserNotification(id);
+            await NotificationUserServices.markAsRead(id);
             res.status(200).json({ success: true });
         } catch (e) {
             next(e);

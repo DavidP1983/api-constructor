@@ -7,12 +7,12 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 const {
     sendAdminNotifications,
     getNotification,
-    readNotification
+    markNotificationAsRead
 } = notificationUserController;
 
-router.post('/admin-warning', sendAdminNotifications);
+router.post('/send-notification', sendAdminNotifications);
 router.get('/get-notification', authMiddleware, getNotification);
-router.patch('/read-notification', authMiddleware, readNotification);
+router.patch('/mark-read', authMiddleware, markNotificationAsRead);
 
 
 export default router;

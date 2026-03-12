@@ -37,9 +37,9 @@ class NotificationUserServices {
         return { notifications: userData.notifications };
     }
 
-    async readUserNotification(_id) {
+    async markAsRead(_id) {
         const userData = await User.updateOne({ _id }, { $set: { 'notifications.isRead': true } });
-        console.log('READ SERVICE', userData);
+
         if (userData.matchedCount === 0) {
             throw new ApiError.notFound(404, 'User not found');
         }
