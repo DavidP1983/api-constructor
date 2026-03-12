@@ -118,6 +118,19 @@ class UserController {
             next(e);
         }
     }
+
+    async getStats(req, res, next) {
+        try {
+            const role = req.user.role;
+            if (role !== 'Admin') {
+                throw new ApiError.forbidden(403, 'Forbidden get stats');
+            }
+            const stats = await userServices.getInfoAboutUsers();
+            res.status(200).json(stats);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export default new UserController();

@@ -13,7 +13,8 @@ const {
     deleteUser,
     refresh,
     uploadFile,
-    getImage
+    getImage,
+    getStats
 } = userController;
 
 
@@ -39,6 +40,7 @@ router.delete('/delete', authMiddleware, deleteUser);
 router.post('/refresh', refresh);
 router.post('/upload', authMiddleware, upload.single('avatar'), uploadFile);
 router.get('/:id/avatar', getImage);
+router.get('/admin-stats', authMiddleware, getStats);
 
 export default router;
 

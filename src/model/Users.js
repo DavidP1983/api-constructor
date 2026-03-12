@@ -11,6 +11,7 @@ const notificationSchema = new Schema({
     createdAt: { type: String, default: '' }
 }, { _id: false });
 
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -30,9 +31,10 @@ const userSchema = new Schema({
     notifications: { type: notificationSchema, default: null },
     lastLogin: { type: String, default: '' },
     lastActivity: { type: String },
-    avatar: { type: Buffer }
-
+    avatar: { type: Buffer },
+    isOnline: { type: Boolean, default: false },
 }, { timestamps: true });
+
 
 
 userSchema.statics.registration = async (email) => {

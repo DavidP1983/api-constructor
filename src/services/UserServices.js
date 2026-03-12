@@ -25,7 +25,8 @@ class UserService {
             joined: date,
             notifications: false,
             lastActivity: date,
-            avatar: null
+            avatar: null,
+            isOnline: true
         };
         const user = new User(data);
         await user.save();
@@ -61,6 +62,7 @@ class UserService {
 
             user.lastLogin = user.lastActivity ?? null;
             user.lastActivity = date;
+            user.isOnline = true;
             await user.save();
 
             const payloadDto = new PayloadDTO(user);
@@ -98,6 +100,7 @@ class UserService {
             // удаляем ключ refreshToken из Redis, а так же инвалидируем кеш тестов
             await cleanupUserSession(tokenData.id);
         }
+        await User.findOneAndUpdate({ _id: tokenData.id }, { isOnline: false });
         const token = await tokenServices.removeToken(refreshToken);
         if (!token) {
             throw new Error('Token not found');
@@ -215,6 +218,19 @@ class UserService {
             return null;
         }
         return user.avatar;
+    }
+
+    async getInfoAboutUsers() {
+
+        const usersOnline = await User.countDocuments({ isOnline: true });
+        const totalUsers = await User.countDocuments();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const newUsers = await User.countDocuments({ createdAt: { $gte: today } });
+
+        return { usersOnline, totalUsers, newUsers };
     }
 }
 
