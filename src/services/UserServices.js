@@ -8,6 +8,7 @@ import { redis } from '../lib/redis.js';
 import { CompletedTest } from '../model/CompletedTest.js';
 import { User } from '../model/Users.js';
 import tokenServices from '../services/TokenServices.js';
+import { sendMail } from '../utils/sendMail.js';
 import testServices from './TestServices.js';
 
 
@@ -231,6 +232,15 @@ class UserService {
         const newUsers = await User.countDocuments({ createdAt: { $gte: today } });
 
         return { usersOnline, totalUsers, newUsers };
+    }
+
+    async sendFeedback(_id, data) {
+        await sendMail(data);
+        const res = await User.updateOne({ _id }, { $set: { feedbackSubmitted: true } });
+        if (res.matchedCount === 0) {
+            throw new ApiError.notFound(404, 'User not found');
+        }
+        return true;
     }
 }
 

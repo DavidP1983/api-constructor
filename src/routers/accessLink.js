@@ -1,7 +1,10 @@
 import Router from 'express';
 import TestAccessLinkController from '../controllers/TestAccessLinkController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+import { mongoMiddleware } from '../middleware/mongoMiddleware.js';
+
 const router = new Router();
+router.use(mongoMiddleware);
 
 const { createLink, getTest } = TestAccessLinkController;
 

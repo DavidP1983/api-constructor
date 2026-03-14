@@ -1,9 +1,11 @@
 import Router from 'express';
-const router = new Router();
-
 import testController from '../controllers/TestController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { cache } from '../middleware/cacheMiddleware.js';
+import { mongoMiddleware } from '../middleware/mongoMiddleware.js';
+
+const router = new Router();
+router.use(mongoMiddleware);
 
 const {
     getTestsByQueryParams,

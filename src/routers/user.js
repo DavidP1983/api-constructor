@@ -1,9 +1,11 @@
 import Router from 'express';
-const router = new Router();
-
 import multer from 'multer';
 import userController from '../controllers/UserController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+import { mongoMiddleware } from '../middleware/mongoMiddleware.js';
+
+const router = new Router();
+router.use(mongoMiddleware);
 
 const {
     registration,
@@ -14,7 +16,8 @@ const {
     refresh,
     uploadFile,
     getImage,
-    getStats
+    getStats,
+    submitFeedback
 } = userController;
 
 
@@ -41,6 +44,7 @@ router.post('/refresh', refresh);
 router.post('/upload', authMiddleware, upload.single('avatar'), uploadFile);
 router.get('/:id/avatar', getImage);
 router.get('/admin-stats', authMiddleware, getStats);
+router.post('/user-feedback', authMiddleware, submitFeedback);
 
 export default router;
 

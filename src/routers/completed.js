@@ -1,8 +1,10 @@
 import Router from 'express';
-const router = new Router();
-
 import completedTestController from '../controllers/CompletedTestController.js';
 import { cache } from '../middleware/cacheMiddleware.js';
+import { mongoMiddleware } from '../middleware/mongoMiddleware.js';
+
+const router = new Router();
+router.use(mongoMiddleware);
 
 const {
     createCompletedTest,

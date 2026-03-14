@@ -33,6 +33,7 @@ const userSchema = new Schema({
     lastActivity: { type: String },
     avatar: { type: Buffer },
     isOnline: { type: Boolean, default: false },
+    feedbackSubmitted: { type: Boolean, default: false }
 }, { timestamps: true });
 
 

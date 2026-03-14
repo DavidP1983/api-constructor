@@ -45,8 +45,14 @@ app.use(errorMiddleware);
 
 
 async function startApp() {
-    await connectDB();
-    app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
+    try {
+        await connectDB();
+        app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
+
+    } catch (e) {
+        console.error("Server start failed:", e);
+        process.exit(1);
+    }
 }
 
 startApp();

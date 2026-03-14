@@ -131,6 +131,21 @@ class UserController {
             next(e);
         }
     }
+
+    async submitFeedback(req, res, next) {
+        try {
+            const id = req.user.id;
+            const data = req.body;
+            if (!id) {
+                throw new ApiError.unauthorizeError();
+            }
+            await userServices.sendFeedback(id, data);
+            res.status(200).json({ success: true });
+        } catch (e) {
+            next(e);
+        }
+    }
 }
+
 
 export default new UserController();

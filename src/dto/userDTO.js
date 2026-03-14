@@ -8,6 +8,7 @@ export class UserDTO {
     lastActivity;
     lastLogin;
     hasAvatar;
+    feedbackSubmitted;
 
     constructor(userModel) {
         this.id = String(userModel._id);
@@ -19,5 +20,6 @@ export class UserDTO {
         this.lastActivity = userModel.lastActivity;
         this.lastLogin = userModel.lastLogin;
         this.hasAvatar = Boolean(userModel.avatar);
+        this.feedbackSubmitted = userModel.feedbackSubmitted;
     }
 }

@@ -1,8 +1,10 @@
 import Router from 'express';
-const router = new Router();
-
 import notificationUserController from '../controllers/NotificationUserController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+import { mongoMiddleware } from '../middleware/mongoMiddleware.js';
+
+const router = new Router();
+router.use(mongoMiddleware);
 
 const {
     sendAdminNotifications,
