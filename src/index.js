@@ -6,11 +6,14 @@ import { connectDB } from './config/db.js';
 import { ApiError } from './exceptions/apiError.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { multerErrorHandler } from './middleware/multerErrorHandler.js';
-import accessLinkRouter from './routers/accessLink.js';
-import completedTestRouter from './routers/completed.js';
-import notificationsRouter from './routers/notifications.js';
-import testRouter from './routers/test.js';
-import userRouter from './routers/user.js';
+import {
+    accessLinkRouter,
+    completedTestRouter,
+    flashCardsRouter,
+    notificationsRouter,
+    testRouter,
+    userRouter
+} from './routers/index.js';
 
 dotenv.config();
 
@@ -34,6 +37,7 @@ app.use('/test', testRouter);
 app.use('/link', accessLinkRouter);
 app.use('/completed', completedTestRouter);
 app.use('/notifications', notificationsRouter);
+app.use('/flashcards', flashCardsRouter);
 
 app.use((req, res, next) => {
     next(ApiError.badRequest(404, `Request failed. Please try again`));
