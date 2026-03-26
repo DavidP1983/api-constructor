@@ -36,6 +36,7 @@ const flashCardsSchema = new Schema({
         trim: true,
     },
     description: { type: String, required: true, default: null },
+    tag: { type: String, trim: true, default: null },
     cards: { type: [cardsSchema], default: [] },
 }, { timestamps: true });
 

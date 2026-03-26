@@ -8,11 +8,24 @@ router.use(mongoMiddleware);
 
 const {
     getFolders,
-    createFolder
+    createFolder,
+    getFolderById,
+    deleteFolderById,
+    updateFolderById,
+    createCardById,
+    updateCardById,
+    deleteCardById
 } = flashCardsController;
 
 
 router.get('/get-folders', authMiddleware, getFolders);
 router.post('/create-folder', authMiddleware, createFolder);
+router.get('/get-folder/:id', getFolderById);
+router.delete('/delete-folder/:id', authMiddleware, deleteFolderById);
+router.patch('/update-folder/:id', authMiddleware, updateFolderById);
+router.patch('/create-card/:id', authMiddleware, createCardById);
+router.patch('/update-card/:folderId/card/:cardId', authMiddleware, updateCardById);
+router.delete('/delete-card/:folderId/card/:cardId', authMiddleware, deleteCardById);
 
 export default router;
+
