@@ -9,7 +9,8 @@ const cardsSchema = new Schema({
     type: { type: String, enum: ['code', 'text', 'formula'], default: null },
     status: { type: String, enum: ['known', 'repeat'], default: null },
     img: { type: String, default: null },
-    difficulty: { type: Number, enum: [1, 2, 3, 4, 5] }
+    difficulty: { type: Number, enum: [1, 2, 3, 4, 5] },
+    lang: { type: String, enum: ['ru', 'en', 'fr'], default: null },
 }, { timestamps: true });
 
 

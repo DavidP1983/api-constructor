@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { ApiError } from "../exceptions/apiError.js";
 import { FlashCards } from "../model/FlashCards.js";
 
@@ -89,6 +90,7 @@ class FlashCardsServices {
         return updatedCard.cards.find(c => c._id.toString() === cardId);
     }
 
+
     async deleteCard(folderId, cardId) {
         const deletedCard = await FlashCards.findByIdAndUpdate(
             { _id: folderId, 'cards._id': cardId },
@@ -101,6 +103,32 @@ class FlashCardsServices {
             throw new ApiError.notFound('Folder or Card not found');
         }
         return true;
+    }
+
+    async updateCardsStatus(folderId, data) {
+        const validData = data.filter(({ status }) => ['known', 'repeat'].includes(status)); // Предотвращает от мусора с Front типа null/''.... Мы фильтруем и оставляем только валидные данные status
+
+        if (!validData.length) return;
+
+        const updatedData = await FlashCards.bulkWrite(
+            validData.map(({ _id, status }) => ({
+                updateOne: {
+                    filter: { _id: folderId },
+                    update: {
+                        $set: {
+                            "cards.$[elem].status": status
+                        }
+                    },
+                    arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(_id) }]
+                }
+            }))
+        );
+
+        if (updatedData.matchedCount === 0) {
+            throw new ApiError.notFound('Folder or Card not found');
+        }
+
+        return updatedData;
     }
 }
 

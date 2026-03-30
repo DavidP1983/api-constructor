@@ -119,6 +119,24 @@ class FlashCardsController {
             next(e);
         }
     }
+
+    async updateCardStatus(req, res, next) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+            if (!id) {
+                throw new ApiError.badRequest(400, 'Folder ID not defined');
+            }
+            const normalizeData = Object.entries(data).map(([id, value]) => ({ _id: id, status: value }));
+            if (normalizeData.length === 0) {
+                throw new ApiError.badRequest(400, 'Zero data to update');
+            }
+            await FlashCardsServices.updateCardsStatus(id, normalizeData);
+            res.status(200).json({ success: true });
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export default new FlashCardsController();
