@@ -59,6 +59,9 @@ async function startApp() {
     }
 }
 
-startApp();
+if (process.env.NODE_ENV !== 'production') {
+    startApp();
+}
+
 
 export default app;
