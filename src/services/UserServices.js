@@ -24,7 +24,7 @@ class UserService {
             password,
             role: 'User',
             joined: date,
-            notifications: false,
+            notifications: null,
             lastActivity: date,
             avatar: null,
             isOnline: true

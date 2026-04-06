@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import { connectDB } from './config/db.js';
 import { ApiError } from './exceptions/apiError.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { multerErrorHandler } from './middleware/multerErrorHandler.js';
@@ -47,20 +48,20 @@ app.use(errorMiddleware);
 
 
 
-// async function startApp() {
-//     try {
-//         await connectDB();
-//         app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
+async function startApp() {
+    try {
+        await connectDB();
+        app.listen(PORT, () => console.log(`Server listen on PORT ${PORT}`));
 
-//     } catch (e) {
-//         console.error("Server start failed:", e);
-//         process.exit(1);
-//     }
-// }
+    } catch (e) {
+        console.error("Server start failed:", e);
+        process.exit(1);
+    }
+}
 
-// if (process.env.NODE_ENV !== 'production') {
-//     startApp();
-// }
+if (process.env.NODE_ENV !== 'production') {
+    startApp();
+}
 
 
 export default app;

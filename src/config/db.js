@@ -30,6 +30,6 @@ export async function connectDB() {
         cached.promise = null;
         throw e;
     }
-    // cached.conn = await cached.promise;
+    cached.conn = await cached.promise;
     return cached.conn;
 }
