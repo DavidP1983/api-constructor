@@ -44,7 +44,6 @@ class UserService {
 
     async login(email, password, ip) {
         const key = `login:${ip}`;
-        const REFRESH_TTL = 30 * 24 * 60 * 60;
 
         // Redis Rate Time Limit
         // Делаем проверку до того, как запрос пойдет к DB
@@ -55,43 +54,88 @@ class UserService {
 
         try {
             const user = await User.findCredentials(email, password);
-
+            const userDTO = new UserDTO(user);
             // Если все прошло успешно сбрасываем счетчик
             await redis.del(key);
 
-            const date = format(new Date(new Date()), "yyyy-MM-dd");
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            const existingCode = await redis.set(`2fa:${userDTO.id}`, code, { ex: 180, nx: true });
+            if (!existingCode) {
+                throw ApiError.badRequest(429, 'Code already sent. Please wait.');
+            }
 
-            user.lastLogin = user.lastActivity ?? null;
-            user.lastActivity = date;
-            user.isOnline = true;
-            await user.save();
+            const data = {
+                email,
+                code,
+                source: 'verification'
+            };
 
-            const payloadDto = new PayloadDTO(user);
-            const userDTO = new UserDTO(user);
-            const token = tokenServices.generateToken({ ...payloadDto });
-            await tokenServices.saveToken(payloadDto.id, token.refreshToken);
-
-            // Сохраняем RefreshToken в Redis
-            await redis.set(
-                `refresh:${payloadDto.id}`,
-                token.refreshToken,
-                { ex: REFRESH_TTL },
-
-            );
-
-            return { ...token, user: userDTO };
-
+            await sendMail(data);
+            return { requires2FA: true, user: userDTO };
         } catch (e) {
-
             // Если логин неуспешен устанавливаем счетчик
             await redis.incr(key);
             const ttl = await redis.ttl(key);
             if (ttl === -1) {
                 await redis.expire(key, 60);
             }
-
             throw e;
         }
+    }
+
+    async verifyCode(inputCode, userId) {
+        const REFRESH_TTL = 30 * 24 * 60 * 60;
+        const key = `2fa:${userId}`;
+        const savedCode = await redis.get(key);
+
+        if (!savedCode || String(savedCode) !== String(inputCode)) {
+            const ttl = await redis.ttl(key);
+            const retryAfter = ttl > 0 ? ttl : 0;
+            throw ApiError.badRequest(400, 'Code Invalid', { retryAfter });
+        }
+        await redis.del(key);
+
+        const user = await User.findById(userId);
+        if (!user) {
+            throw ApiError.badRequest(400, 'User not found');
+        }
+
+        const date = format(new Date(new Date()), "yyyy-MM-dd");
+
+        user.lastLogin = user.lastActivity ?? null;
+        user.lastActivity = date;
+        user.isOnline = true;
+        await user.save();
+
+        const payloadDto = new PayloadDTO(user);
+        const userDTO = new UserDTO(user);
+        const token = tokenServices.generateToken({ ...payloadDto });
+        await tokenServices.saveToken(payloadDto.id, token.refreshToken);
+
+        // Сохраняем RefreshToken в Redis
+        await redis.set(
+            `refresh:${payloadDto.id}`,
+            token.refreshToken,
+            { ex: REFRESH_TTL },
+
+        );
+
+        return { ...token, user: userDTO };
+    }
+
+
+    async resendCode(userId, email) {
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        await redis.set(`2fa:${userId}`, code, { ex: 180 });
+
+        const data = {
+            email,
+            code,
+            source: 'verification'
+        };
+
+        await sendMail(data);
+        return { requires2FA: true };
     }
 
 

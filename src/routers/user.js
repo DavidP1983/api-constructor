@@ -10,6 +10,8 @@ router.use(mongoMiddleware);
 const {
     registration,
     login,
+    verification,
+    resendCodeVerification,
     logout,
     update,
     deleteUser,
@@ -37,6 +39,8 @@ const upload = multer({
 
 router.post('/registration', registration);
 router.post('/login', login);
+router.post('/code-verification', verification);
+router.post('/code-resend', resendCodeVerification);
 router.post('/logout', logout);
 router.patch('/update', authMiddleware, update);
 router.delete('/delete', authMiddleware, deleteUser);

@@ -16,11 +16,24 @@ class UserController {
         }
     }
 
+
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
             const ip = req.headers["x-forwarded-for"]?.split(',')[0] || req.socket.remoteAddress;
-            const { user, accessToken, refreshToken } = await userServices.login(email, password, ip);
+            const result = await userServices.login(email, password, ip);
+
+            res.status(200).send(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+
+    async verification(req, res, next) {
+        try {
+            const { code, userId } = req.body;
+            const { user, accessToken, refreshToken } = await userServices.verifyCode(code, userId);
 
             setAuthCookies(res, accessToken, refreshToken);
             res.status(200).send(user);
@@ -29,6 +42,15 @@ class UserController {
         }
     }
 
+    async resendCodeVerification(req, res, next) {
+        try {
+            const { userId, email } = req.body;
+            const result = await userServices.resendCode(userId, email);
+            res.status(200).send(result);
+        } catch (e) {
+            next(e);
+        }
+    }
 
     async logout(req, res, next) {
         try {

@@ -1,5 +1,6 @@
 import { ApiError } from "../exceptions/apiError.js";
 import { createEmailPayload } from "../services/mail/createEmailPayload.js";
+import { createEmailPayloadCodeVerification } from "../services/mail/createEmailPayloadCodeVerification.js";
 import { createEmailPayloadFeedback } from "../services/mail/createEmailPayloadFeedback.js";
 import { createEmailPayloadWithAttachments } from "../services/mail/createEmailPayloadWithAttachments.js";
 import MailServices from "../services/mail/mailServices.js";
@@ -29,6 +30,16 @@ export const sendMail = async (data, pdfBase64) => {
 
     if (data?.source === 'feedback') {
         const templateFeedBack = createEmailPayloadFeedback(data);
+        try {
+            const result = await MailServices.sendMail(templateFeedBack);
+            return result;
+        } catch (e) {
+            throw ApiError.internal(500, 'Failed to send email');
+        }
+
+    }
+    if (data?.source === 'verification') {
+        const templateFeedBack = createEmailPayloadCodeVerification(data);
         try {
             const result = await MailServices.sendMail(templateFeedBack);
             return result;
